@@ -46,3 +46,13 @@ export class MiniPicker {
   getCoords(){ return this.marker? this.marker._coords : null; }
   clear(){ if(this.marker){ this.marker.remove(); this.marker=null; } }
 }
+
+/*
+m.bindPopup(`
+  <div style="font-weight:600;text-transform:capitalize">${labelTipo(i.tipo)} · ${i.severidad}</div>
+  <div style="font-size:14px">${i.descripcion}</div>
+  <div style="font-size:12px;color:#6b7280">
+    ${fmtDateTime(i.fecha)} · ${i.fuente} · Confianza: ${(i.trust!=null?Math.round(i.trust*100):'—')}%
+  </div>
+`);
+*/
