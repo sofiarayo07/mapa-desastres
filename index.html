@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- MarkerCluster (opcional, mejora UX con muchos reportes) -->
+  <!-- MarkerCluster -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
@@ -36,6 +36,13 @@
   <aside id="filtersPanel" class="filters" aria-hidden="true">
     <div class="content" role="region" aria-label="Panel de filtros">
       <h2>Filtrar visualización</h2>
+
+      <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)" />
+      <h3 style="margin:0 0 8px 0;font-size:16px">Recomendaciones</h3>
+      <div id="recomBox" class="card" style="border-radius:12px;margin-top:8px">
+        <div class="content" id="recomContent"></div>
+      </div>
+
 
       <div class="field">
         <label for="fSearch">Búsqueda</label>
@@ -76,13 +83,13 @@
           <option value="todas">Todas</option>
           <option value="Ciudadanía">Ciudadanía</option>
           <option value="Protección Civil">Protección Civil</option>
-          <option value="Estación Meteo">Estación Meteo</option>
+          <option value="Estación Metereologica">Estación Metereológica</option>
         </select>
       </div>
 
       <div class="actions-inline">
         <button id="btnClear" class="btn">Limpiar</button>
-        <button id="btnExport" class="btn">Exportar GeoJSON</button>
+        <button id="btnCloseFilters" class="btn">Cerrar panel</button>
       </div>
 
       <div class="legend">

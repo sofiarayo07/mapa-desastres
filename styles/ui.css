@@ -55,6 +55,31 @@ input,select,textarea{padding:9px 10px;border:1px solid var(--border);border-rad
 .legend-title{font-size:12px;margin-bottom:6px}
 .legend-row{display:flex;align-items:center;gap:10px}
 
+
+/* --- Scroll interno del panel de filtros--- */
+.filters {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.filters .content {
+  max-height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.filters .content::-webkit-scrollbar {
+  width: 8px;
+}
+.filters .content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.filters .content::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+
 /* Dialog */
 dialog{border:none;border-radius:16px;max-width:720px;width:92vw;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.25)}
 dialog::backdrop{background:rgba(0,0,0,.35)}
@@ -67,3 +92,22 @@ dialog::backdrop{background:rgba(0,0,0,.35)}
 /* Footer */
 footer{padding:24px 16px;font-size:12px;color:var(--muted)}
 
+
+/* Recomendaciones */
+.recom-head {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:8px; margin-bottom:8px;
+}
+.recom-badge {
+  display:inline-block; padding:4px 10px; border-radius:999px;
+  background: var(--bgSoft, #f4f4f5); font-weight:600; font-size:14px;
+}
+.recom-section { margin-top:10px; }
+.recom-title {
+  font-weight:700; font-size:14px; margin-bottom:6px;
+  color: var(--text, #111827);
+}
+.recom-list { margin:0; padding-left:18px; }
+.recom-list li { margin:4px 0; line-height:1.35; }
+.recom-empty { padding:6px 2px; }
+.recom-foot { margin-top:10px; color: var(--muted,#6b7280); }

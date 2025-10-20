@@ -2,13 +2,13 @@ import { addRiskLayer } from './risk-layer.js';
 const F = (k)=> (window.FEATURES && window.FEATURES[k]) === true;
 
 
-// app.js — orquesta todo
 import { tipoOptions, sevColors, debounce, nowIso } from './utils.js';
 import { all, add, exportGeoJSON } from './store.js';
 import { DisasterMap, MiniPicker } from './map.js';
 import { renderBadgesTipos, renderList, renderKpis } from './components.js';
+import { renderRecommendations, ensureTipoOptions } from "./recommendations.js";
 
-// Estado
+
 let filtro = { search:'', tipo:'todos', sev:'todas', from:'', to:'', fuente:'todas' };
 
 // DOM refs
@@ -55,7 +55,6 @@ initSelects();
 // Fuente filtro
 $('#fFuente').addEventListener('change', e=>{ filtro.fuente = e.target.value; renderAll(); });
 
-// Inputs filtro
 $('#fSearch').addEventListener('input', debounce(e=>{ filtro.search = e.target.value; renderAll(); }, 200));
 $('#fTipo').addEventListener('change', e=>{ filtro.tipo = e.target.value; renderAll(); });
 $('#fSev').addEventListener('change', e=>{ filtro.sev = e.target.value; renderAll(); });
@@ -71,16 +70,15 @@ $('#btnFilters').addEventListener('click', ()=>{
 });
 document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') { filtersPanel.classList.remove('open'); filtersPanel.setAttribute('aria-hidden', 'true'); } });
 
-// Export GeoJSON
-$('#btnExport').addEventListener('click', ()=>{
-  const list = applyFilter(all());
-  const geo = exportGeoJSON(list);
-  const blob = new Blob([JSON.stringify(geo, null, 2)], { type:'application/geo+json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'incidentes.geojson';
-  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-});
+// Botón "Cerrar panel"
+const btnCloseFilters = $('#btnCloseFilters');
+if (btnCloseFilters) {
+  btnCloseFilters.addEventListener('click', () => {
+    filtersPanel.classList.remove('open');
+    filtersPanel.setAttribute('aria-hidden', 'true');
+    $('#btnFilters').setAttribute('aria-expanded', 'false');
+  });
+}
 
 // Limpiar filtros
 $('#btnClear').addEventListener('click', ()=>{
@@ -141,3 +139,12 @@ formNuevo.addEventListener('submit', (e)=>{
   closeDialog();
 });
 
+const fTipo = document.getElementById("fTipo");
+const recomMount = document.getElementById("recomContent");
+
+ensureTipoOptions(fTipo);
+
+renderRecommendations(fTipo.value, recomMount);
+fTipo.addEventListener("change", () => {
+  renderRecommendations(fTipo.value, recomMount);
+});
