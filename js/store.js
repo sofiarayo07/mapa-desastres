@@ -37,3 +37,37 @@ export function exportGeoJSON(list){
     }))
   };
 }
+
+/*
+export function update(id, patch){
+  data = data.map(i => i.id===id ? { ...i, ...patch } : i);
+  localStorage.setItem(KEY, JSON.stringify(data));
+  return data.find(i => i.id===id);
+}
+
+export function remove(id){
+  data = data.filter(i => i.id!==id);
+  localStorage.setItem(KEY, JSON.stringify(data));
+  return true;
+}
+
+// En exportGeoJSON agrega trust en properties:
+export function exportGeoJSON(list){
+  return {
+    type: "FeatureCollection",
+    features: list.map(i => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [i.coords.lng, i.coords.lat] },
+      properties: {
+        id: i.id,
+        tipo: i.tipo,
+        severidad: i.severidad,
+        descripcion: i.descripcion,
+        fuente: i.fuente,
+        fecha: i.fecha,
+        trust: i.trust // 👈 esta línea nueva
+      }
+    }))
+  };
+}
+*/

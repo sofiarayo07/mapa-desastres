@@ -1,3 +1,6 @@
+import { addRiskLayer } from './risk-layer.js';
+const F = (k)=> (window.FEATURES && window.FEATURES[k]) === true;
+
 
 // app.js — orquesta todo
 import { tipoOptions, sevColors, debounce, nowIso } from './utils.js';
