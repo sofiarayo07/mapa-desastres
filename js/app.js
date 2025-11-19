@@ -1,5 +1,5 @@
 // app.js
-
+import { renderCharts } from "./charts.js";
 import { addRiskLayer } from './risk-layer.js';
 const F = (k)=> (window.FEATURES && window.FEATURES[k]) === true;
 
@@ -41,11 +41,13 @@ function applyFilter(list){
 }
 
 function renderAll(){
-  const list = applyFilter(all());
-  map.render(list);
-  renderList(listEl, list);
-  renderBadgesTipos(badgesTipos, list);
-  renderKpis(kTotal, k24, kTipos, list);
+const list = applyFilter(all());
+  map.render(list);
+  renderList(listEl, list);
+  renderBadgesTipos(badgesTipos, list);
+  renderKpis(kTotal, k24, kTipos, list);
+  //Se actualizan las gráficas con la lista filtrada
+  renderCharts(list);
 }
 
 // ======= Filtros =======

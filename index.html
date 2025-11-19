@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
+  <!-- Chart.js para las gráficas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <link rel="stylesheet" href="styles/ui.css" />
 </head>
 <body>
@@ -42,7 +45,6 @@
       <div id="recomBox" class="card" style="border-radius:12px;margin-top:8px">
         <div class="content" id="recomContent"></div>
       </div>
-
 
       <div class="field">
         <label for="fSearch">Búsqueda</label>
@@ -102,17 +104,43 @@
   </aside>
 
   <main class="container app-main">
+    <!-- Indicadores -->
     <section class="card">
       <h3>Indicadores</h3>
       <div class="content">
         <div class="kpis">
-          <div class="kpi"><div class="label">Eventos (filtro)</div><div id="kTotal" class="value">0</div></div>
-          <div class="kpi"><div class="label">Últimas 24 h</div><div id="k24" class="value">0</div></div>
-          <div class="kpi"><div class="label">Tipos activos</div><div id="kTipos" class="value">0</div></div>
+          <div class="kpi">
+            <div class="label">Eventos (filtro)</div>
+            <div id="kTotal" class="value">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Últimas 24 h</div>
+            <div id="k24" class="value">0</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Tipos activos</div>
+            <div id="kTipos" class="value">0</div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- NUEVA SECCIÓN: GRÁFICAS -->
+    <section class="card">
+      <h3>Gráficas de incidentes</h3>
+      <div class="content">
+        <h4>Incidentes por tipo</h4>
+        <canvas id="chartTipos"></canvas>
+
+        <h4>Incidentes por severidad</h4>
+        <canvas id="chartSeveridad"></canvas>
+
+        <h4>Incidentes por mes</h4>
+        <canvas id="chartMeses"></canvas>
+      </div>
+    </section>
+
+    <!-- Distribución por tipo -->
     <section class="card">
       <h3>Distribución por tipo</h3>
       <div class="content">
@@ -120,11 +148,13 @@
       </div>
     </section>
 
+    <!-- Lista de reportes -->
     <section class="card">
       <h3>Reportes</h3>
       <div id="list" class="list" role="list"></div>
     </section>
 
+    <!-- Mapa -->
     <section class="card full">
       <h3>Mapa interactivo</h3>
       <div id="map" aria-label="Mapa principal" role="application"></div>
@@ -132,7 +162,7 @@
   </main>
 
   <footer class="container small">
-    Proyecto académico · ODS 13 · Stack: HTML · CSS · JavaScript · Leaflet · (API R/MongoDB a integrar) . 
+    Proyecto académico · ODS 13 · Stack: HTML · CSS · JavaScript · Leaflet · (API R/MongoDB a integrar) .
     HERRAMIENTAS PARA DATOS NO ESTRUCTURADOS
   </footer>
 
@@ -175,13 +205,12 @@
     </form>
   </dialog>
 
+  <script>
+    window.USE_API = true;
+    window.API_BASE = "http://localhost:3000/api";
+    window.FEATURES = { uploads:false, riskLayer:false, captcha:false };
+  </script>
 
-<script>
-  window.USE_API = true;
-  window.API_BASE = "http://localhost:3000/api";
-  window.FEATURES = { uploads:false, riskLayer:false, captcha:false };
-</script>
-
-<script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
