@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { background-color: #343a40; }
+        .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark px-3">
+        <a class="navbar-brand" href="#">Mapa Desastres - Admin</a>
+        <button id="btn-logout" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Gestión de Reportes</h2>
+        
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Severidad</th>
+                            <th>Descripción</th>
+                            <th>Ubicación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-reportes">
+                        <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.min.js"></script>
+    <script src="panel.js"></script>
+</body>
+</html>
