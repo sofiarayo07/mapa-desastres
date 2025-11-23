@@ -30,7 +30,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   
       // REDIRECCIÓN: Vamos a la carpeta del panel (crea esta carpeta después)
       setTimeout(() => {
-          window.location.href = '../panel/index.html'; 
+          window.location.href = '../panelprincipal/index.html'; 
       }, 1000);
   
     } catch (error) {

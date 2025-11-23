@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - Admin</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .welcome-section {
+            padding: 40px 0 20px 0;
+            text-align: center;
+        }
+        
+        .welcome-section h2 {
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* ESTILOS DE LAS TARJETAS (DASHBOARD CARDS) */
+        .dashboard-card {
+            display: block; /* Para que funcione el link */
+            text-decoration: none;
+            color: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            height: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            color: white; /* Mantiene texto blanco */
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* COLORES ESPECÍFICOS PARA CADA TARJETA */
+        .bg-reportes {
+            background: linear-gradient(135deg, #ff6b6b, #ee5253); /* Rojo/Naranja */
+        }
+        
+        .bg-videos {
+            background: linear-gradient(135deg, #48dbfb, #0abde3); /* Azul Cian */
+        }
+        
+        .bg-recomendaciones {
+            background: linear-gradient(135deg, #1dd1a1, #10ac84); /* Verde */
+        }
+        
+        .bg-estadisticas {
+            background: linear-gradient(135deg, #a55eea, #8854d0); /* Morado */
+        }
+
+        /* Icono de fondo decorativo */
+        .card-bg-icon {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 8rem;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar px-4">
+        <a class="navbar-brand fw-bold text-primary" href="#">
+            <i class="fa fa-globe"></i> Mapa Desastres Admin
+        </a>
+        <div class="d-flex align-items-center">
+            <span class="me-3 text-muted">Hola, Administrador</span>
+            <button id="btn-logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                <i class="fa fa-sign-out-alt"></i> Salir
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Panel de Control Principal</h2>
+            <p class="text-muted">Selecciona una opción para comenzar a administrar</p>
+        </div>
+
+        <div class="row g-4 mt-2">
+            
+            <div class="col-md-6 col-lg-3">
+                <a href="../panel/index.html" class="dashboard-card bg-reportes">
+                    <i class="fa fa-clipboard-list card-bg-icon"></i>
+                    <div class="card-icon"><i class="fa fa-clipboard-list"></i></div>
+                    <div class="card-title">Reportes</div>
+                    <div class="card-desc">Gestionar y borrar reportes de ciudadanos</div>
+                </a>
+            </div>
+
+           <div class="col-md-6 col-lg-3">
+    <a href="../videos/index.html" class="dashboard-card bg-videos"> <i class="fa fa-video card-bg-icon"></i>
+        <div class="card-icon"><i class="fa fa-video"></i></div>
+        <div class="card-title">Videos</div>
+        <div class="card-desc">Subir multimedia y evidencias</div>
+    </a>
+</div>
+
+            <div class="col-md-6 col-lg-3">
+                <a href="#" class="dashboard-card bg-recomendaciones" onclick="alert('Módulo Recomendaciones: Próximamente')">
+                    <i class="fa fa-lightbulb card-bg-icon"></i>
+                    <div class="card-icon"><i class="fa fa-lightbulb"></i></div>
+                    <div class="card-title">Recomendaciones</div>
+                    <div class="card-desc">Editar consejos de seguridad</div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <a href="#" class="dashboard-card bg-estadisticas" onclick="alert('Módulo Estadísticas (R): Próximamente')">
+                    <i class="fa fa-chart-pie card-bg-icon"></i>
+                    <div class="card-icon"><i class="fa fa-chart-pie"></i></div>
+                    <div class="card-title">Estadísticas</div>
+                    <div class="card-desc">Análisis de datos y gráficas</div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
