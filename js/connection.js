@@ -23,7 +23,11 @@ const reporteSchema = new mongoose.Schema({
   severidad: { type: String, required: true },
   fuente: { type: String, required: true },
   coordenadas: { lat: Number, lng: Number },
-  fecha: { type: Date, default: Date.now }
+  fecha: { type: Date, default: Date.now },
+  estado: { type: String },
+  municipio: { type: String },
+  colonia: { type: String },
+  direccion_completa: { type: String }
 });
 
 const Reporte = mongoose.model("Reporte", reporteSchema);
@@ -103,6 +107,22 @@ app.delete("/api/reportes/:id", async (req, res) => {
     res.json({ mensaje: "Reporte eliminado" });
   } catch (err) {
     res.status(500).json({ error: "No se pudo eliminar" });
+  }
+});
+// --- Actualizar Reporte (PUT) ---
+app.put("/api/reportes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    // actualizamos con lo que venga en req.body
+    const reporteActualizado = await Reporte.findByIdAndUpdate(id, req.body, { new: true });
+    
+    if (!reporteActualizado) {
+      return res.status(404).json({ error: "Reporte no encontrado" });
+    }
+    
+    res.json({ mensaje: "Reporte actualizado", data: reporteActualizado });
+  } catch (err) {
+    res.status(500).json({ error: "Error al actualizar" });
   }
 });
 const PORT = process.env.PORT || 3000;
