@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { background-color: #343a40; }
+        .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; }
+    </style>
+</head>
+<body>
+
+   <nav class="navbar navbar-dark px-3 justify-content-between">
+        <a class="navbar-brand" href="#">Mapa Desastres - Admin</a>
+        
+        <div>
+            <a href="../panelprincipal/index.html" class="btn btn-outline-light btn-sm me-2">
+                <i class="fa fa-arrow-left"></i> Volver al Menú
+            </a>
+
+            <button id="btn-logout" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Gestión de Reportes</h2>
+        
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Severidad</th>
+                            <th>Descripción</th>
+                            <th>Ubicación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-reportes">
+                        <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Reporte</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="form-editar">
+              <input type="hidden" id="edit-id"> <div class="mb-3">
+                <label class="form-label">Tipo</label>
+                <select id="edit-tipo" class="form-select">
+                  <option value="inundacion">Inundación</option>
+                  <option value="incendio">Incendio</option>
+                  <option value="deslizamiento">Deslizamiento</option>
+                  <option value="sismo">Sismo</option>
+                  <option value="sequia">Sequía</option>
+                  <option value="ola_calor">Ola de Calor</option>
+                  <option value="tormenta">Tormenta</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Severidad</label>
+                <select id="edit-sev" class="form-select">
+                  <option value="baja">Baja</option>
+                  <option value="media">Media</option>
+                  <option value="alta">Alta</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea id="edit-desc" class="form-control" rows="3"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" onclick="guardarCambios()">Guardar Cambios</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.min.js"></script>
+    <script src="panel.js"></script>
+</body>
+</html>

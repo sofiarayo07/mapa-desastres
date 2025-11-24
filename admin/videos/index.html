@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Videos</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .video-card { transition: transform 0.2s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .video-card:hover { transform: translateY(-5px); }
+        video { width: 100%; border-radius: 5px 5px 0 0; background: black; max-height: 200px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark px-3 justify-content-between">
+        <a class="navbar-brand" href="#">Admin - Videos</a>
+        <div>
+            <a href="../panelprincipal/index.html" class="btn btn-outline-light btn-sm me-2"><i class="fa fa-arrow-left"></i> Volver</a>
+            <button id="btn-logout" class="btn btn-danger btn-sm">Salir</button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Galería de Evidencias</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalVideo">
+                <i class="fa fa-upload"></i> Subir Video
+            </button>
+        </div>
+
+        <div class="row g-4" id="video-grid">
+            <p class="text-center text-muted">Cargando videos...</p>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalVideo" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Subir Nuevo Video</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-upload">
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" id="vid-titulo" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="vid-desc" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Seleccionar Video (MP4, MOV)</label>
+                            <input type="file" id="vid-file" class="form-control" accept="video/*" required>
+                        </div>
+                        <div id="upload-status" class="text-center mb-2"></div>
+                        <div class="d-grid">
+                            <button type="submit" id="btn-subir" class="btn btn-success">Publicar Video</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.min.js"></script>
+    <script src="videos.js"></script>
+</body>
+</html>
