@@ -246,36 +246,42 @@ async function cargarVideosSlider() {
     if (!sliderContainer) return;
 
     try {
-        // Pedimos los videos al backend (con truco de cache ?t=)
+        // 1. Pedimos los videos (con truco anti-caché ?t=)
         const res = await fetch('http://localhost:3000/api/videos?t=' + Date.now());
         const videos = await res.json();
 
+        // 2. Si no hay videos, mostramos mensaje
         if (videos.length === 0) {
             sliderContainer.innerHTML = '<p style="padding:1rem; color:#666;">No hay evidencias multimedia disponibles.</p>';
             return;
         }
 
-        // Creamos el HTML de las tarjetas
+        // 3. Creamos el HTML con la estructura para el CSS de tarjetas
         const cardsHTML = videos.map(vid => {
-            // Validar URL
+            // Validamos que tenga URL
             if(!vid.url) return '';
             
-            // Ruta correcta
+            // Corregimos la ruta para web
             const rutaWeb = '/' + vid.url.replace(/\\/g, '/');
 
             return `
                 <div class="video-card">
-                    <video controls preload="metadata">
-                        <source src="http://localhost:3000${rutaWeb}" type="video/mp4">
-                    </video>
+                    <div class="video-wrapper">
+                        <video controls preload="metadata">
+                            <source src="http://localhost:3000${rutaWeb}#t=1.0" type="video/mp4">
+                            Tu navegador no soporta videos.
+                        </video>
+                    </div>
+                    
                     <div class="video-info">
                         <div class="video-title" title="${vid.titulo}">${vid.titulo}</div>
-                        <div class="video-desc">${vid.descripcion || ''}</div>
+                        <div class="video-desc">${vid.descripcion || 'Sin descripción disponible'}</div>
                     </div>
                 </div>
             `;
         }).join('');
 
+        // 4. Insertamos las tarjetas en el slider
         sliderContainer.innerHTML = cardsHTML;
 
     } catch (error) {
@@ -283,7 +289,6 @@ async function cargarVideosSlider() {
         sliderContainer.innerHTML = '<p style="color:red; padding:1rem;">Error de conexión con videos.</p>';
     }
 }
-
 // Controles de Flechas (Scroll Horizontal)
 document.getElementById('prevVideo')?.addEventListener('click', () => {
     document.getElementById('videoSlider').scrollBy({ left: -300, behavior: 'smooth' });
