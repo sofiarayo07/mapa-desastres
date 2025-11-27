@@ -163,42 +163,52 @@ footer{padding:24px 16px;font-size:12px;color:var(--muted)}
 }
 .video-slider::-webkit-scrollbar { display: none; }
 
-/* TARJETA DE VIDEO */
+/* =========================================
+   DISEÑO DE TARJETAS UNIFORMES (LINDO)
+   ========================================= */
+
 .video-card {
     min-width: 280px;
     width: 280px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    padding: 10px;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
+    
+    /* 1. Altura FIJA para que todas sean gemelas */
+    height: 380px; 
+    
+    background-color: #ffffff;
+    border-radius: 12px; /* Bordes más redondeados */
+    padding: 12px;
+    
+    /* Flexbox para organizar el contenido verticalmente */
     display: flex;
     flex-direction: column;
-    align-items: center;
-    border: 1px solid #eee;
-    flex-shrink: 0; /* Evita que se aplasten */
+    justify-content: flex-start;
+    
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra suave */
+    transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
-/* Efecto Hover (Turquesa) */
+/* Hover: Se levanta y cambia de color */
 .video-card:hover {
-    background-color: #1abc9c;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(26, 188, 156, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    border-color: var(--turquesa);
 }
+/* Nota: Ya no cambiamos el fondo a verde completo porque 
+   leer mucho texto blanco sobre verde cansa la vista. 
+   Solo borde y sombra es más elegante. */
 
-.video-card:hover .video-title,
-.video-card:hover .video-desc {
-    color: #ffffff;
-}
 
-/* Envoltorio del video */
+/* CONTENEDOR DEL VIDEO */
 .video-wrapper {
     width: 100%;
-    height: 150px;
+    height: 150px; /* Altura fija del video */
     background: #000;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
+    flex-shrink: 0; /* Que no se aplaste */
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,28 +220,51 @@ footer{padding:24px 16px;font-size:12px;color:var(--muted)}
     object-fit: cover;
 }
 
-/* Textos */
-.video-info { width: 100%; text-align: center; }
-
-.video-title {
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: #333;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* CONTENEDOR DE TEXTOS */
+.video-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Ocupa el resto del espacio de la tarjeta */
+    overflow: hidden; /* Para que el scroll funcione adentro */
 }
 
-.video-desc {
-    font-size: 0.8rem;
-    color: #666;
+/* TÍTULO */
+.video-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    /* Máximo 2 líneas para el título */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.3;
+}
+
+/* DESCRIPCIÓN (Con Scroll invisible si es muy larga) */
+.video-desc {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.5;
+    text-align: left;
+    
+    /* Esto hace que si hay mucho texto, puedas scrollear DENTRO de la tarjeta */
+    overflow-y: auto; 
+    padding-right: 5px; /* Espacio para evitar roce */
+    
+    /* Barra de scroll fina y bonita */
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+/* Estilo del scroll para Chrome/Safari */
+.video-desc::-webkit-scrollbar {
+    width: 4px;
+}
+.video-desc::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 4px;
 }
 
 /* Botones redondos */
@@ -239,7 +272,7 @@ footer{padding:24px 16px;font-size:12px;color:var(--muted)}
     background: white;
     border: 1px solid #ddd;
     width: 35px; height: 35px; border-radius: 50%;
-    cursor: pointer; color: #555;
+    cursor: pointer; color: #022d6d;
     transition: 0.2s;
     display: flex; align-items: center; justify-content: center;
 }

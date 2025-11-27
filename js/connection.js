@@ -6,24 +6,34 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
 
+// Configuración de rutas y servidor
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+// Aumentamos límite para videos pesados
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Carpeta pública para videos e imágenes
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 const uri = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT_SECRET || "secreto_super_seguro_123";
 
+// Conexión a Base de Datos
 mongoose.connect(uri)
   .then(() => console.log("Conectado a MongoDB Atlas"))
   .catch(err => console.error("Error de conexión:", err));
 
-// --- REPORTES ---
+// ==========================================
+// 1. REPORTES (Con datos para R)
+// ==========================================
 const reporteSchema = new mongoose.Schema({
   descripcion: { type: String, required: true },
   tipo: { type: String, required: true },
@@ -31,6 +41,7 @@ const reporteSchema = new mongoose.Schema({
   fuente: { type: String, required: true },
   coordenadas: { lat: Number, lng: Number },
   fecha: { type: Date, default: Date.now },
+  // Campos extra para R
   estado: { type: String },
   municipio: { type: String },
   colonia: { type: String },
@@ -77,7 +88,9 @@ app.put("/api/reportes/:id", async (req, res) => {
   }
 });
 
-// --- USUARIOS ---
+// ==========================================
+// 2. USUARIOS (Auth)
+// ==========================================
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true }
@@ -118,13 +131,17 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// --- VIDEOS ---
+// ==========================================
+// 3. VIDEOS (Multer)
+// ==========================================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+    // Limpiamos el nombre de caracteres raros
+    const nombreLimpio = file.originalname.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9.-]/g, '');
+    cb(null, Date.now() + '-' + nombreLimpio);
   }
 });
 const upload = multer({ storage: storage });
@@ -170,7 +187,51 @@ app.delete("/api/videos/:id", async (req, res) => {
   }
 });
 
-app.use(express.json({ limit: '150mb' }));
-app.use(express.urlencoded({ limit: '150mb', extended: true }));
+// ==========================================
+// 4. INTEGRACIÓN CON R (Gráfica)
+// ==========================================
+app.get("/api/analytics/grafica", async (req, res) => {
+  try {
+    const reportes = await Reporte.find();
+    
+    // Crear CSV temporal
+    let csvContent = "tipo,severidad,estado\n"; 
+    reportes.forEach(r => {
+      const tipo = (r.tipo || "otro").replace(/,/g, '');
+      const sev = (r.severidad || "media").replace(/,/g, '');
+      const est = (r.estado || "desconocido").replace(/,/g, '');
+      csvContent += `${tipo},${sev},${est}\n`;
+    });
+
+    const tempCsvPath = path.resolve(__dirname, '../temp_data.csv');
+    const imagePath = path.resolve(__dirname, '../uploads/grafica_r.png');
+    const rScriptPath = path.resolve(__dirname, '../analisis.R');
+    
+    fs.writeFileSync(tempCsvPath, csvContent);
+
+    // Ejecutar R
+    const command = `Rscript "${rScriptPath}" "${tempCsvPath}" "${imagePath}"`;
+
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error("Error R:", stderr);
+        return res.status(500).send("Error generando gráfica R");
+      }
+      if (fs.existsSync(imagePath)) {
+          res.sendFile(imagePath);
+      } else {
+          res.status(500).send("R terminó pero no generó imagen");
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error interno");
+  }
+});
+
+// ==========================================
+// SERVIDOR
+// ==========================================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor activo en http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Servidor API activo en http://localhost:${PORT}`));

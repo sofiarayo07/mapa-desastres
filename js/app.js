@@ -1,5 +1,5 @@
 // app.js
-
+import { renderCharts } from "./charts.js";
 import { addRiskLayer } from './risk-layer.js';
 const F = (k)=> (window.FEATURES && window.FEATURES[k]) === true;
 

@@ -29,7 +29,6 @@
   <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 
-
   <link rel="stylesheet" href="styles/ui.css" />
 
 </head>
@@ -42,7 +41,7 @@
 
       <div class="brand" aria-label="Mapa de Desastres">
 
-        <div class="logo" aria-hidden="true">🌎</div>
+        <div class="logo" aria-hidden="true"></div>
 
         <div class="brand-txt">
 
@@ -213,7 +212,6 @@
 
 
   <main class="container app-main">
-
     <section class="card">
 
       <h3>Indicadores</h3>
@@ -280,6 +278,10 @@
             </div>
         </div>
     </section>
+    <div class="card">
+    <h3>Estadísticas en Tiempo Real (R + Mongo)</h3>
+    <img src="http://localhost:3000/api/analytics/grafica" style="width: 100%; border-radius: 8px;" alt="Cargando gráfica de R...">
+</div>
 
   </main>
 
@@ -371,6 +373,11 @@
 
   </dialog>
 
+  <script>
+    window.USE_API = true;
+    window.API_BASE = "http://localhost:3000/api";
+    window.FEATURES = { uploads:false, riskLayer:false, captcha:false };
+  </script>
 
 
 
