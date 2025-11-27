@@ -2,9 +2,11 @@
   "name": "mapa-desastres",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node js/connection.js",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
