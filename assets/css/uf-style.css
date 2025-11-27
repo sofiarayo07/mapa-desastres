@@ -5,14 +5,14 @@ body{
 body{
 	display: flex;
 	align-items: center;
-	background-image: linear-gradient( to right, #f111ae, #e78fd3);
+	background-image: linear-gradient( to right, #1655ac, #8fbfe7);
 }
 a{
-	color: #c00dabc8;
+	color: #072e75c8;
 	text-decoration: none;
 }
 a:hover{
-	color: #690856;
+	color: #3d50cd;
 }
 .uf-form-signin {
     width: 100%;
@@ -41,12 +41,12 @@ a:hover{
     background: #ffffff;
 }
 .uf-btn-primary {
-    background: #690856;
+    background: #000537;
     color: #fff;
 }
 
 .uf-btn-primary:hover {
-    background: #c71488;
+    background: #257cc9;
     color: #fff;
 }
 
