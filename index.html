@@ -1,269 +1,160 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
   <meta charset="UTF-8" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Mapa de Desastres · ODS 13</title>
 
-
-
   <!-- Leaflet core -->
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-
-
   <!-- MarkerCluster -->
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
-
   <script defer src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-
   <link rel="stylesheet" href="styles/ui.css" />
-
 </head>
 
 <body>
 
+  <!-- ===========================
+        ENCABEZADO CON LOGO
+  ============================ -->
   <header class="app-header" role="banner">
-
-    <div class="container head-wrap" >
+    <div class="container head-wrap">
 
       <div class="brand" aria-label="Mapa de Desastres">
 
-        <div class="logo" aria-hidden="true"></div>
+        <!-- LOGO REEMPLAZADO -->
+        <img src="imagenes/desastres.png" alt="Logo" class="logo-principal">
 
         <div class="brand-txt">
-
           <h1>Mapa de Desastres</h1>
-
           <p class="muted">ODS 13 · Acción por el clima — Reportes en tiempo real</p>
-
         </div>
-
       </div>
 
-     
-
       <nav class="actions" aria-label="Acciones">
-
-       
-
-        <a href="admin/login/index.html" class="btn" aria-label="Iniciar Sesión Admin" title="Ir al Admin">
-
-            👤 </a>
-
+        <a href="admin/login/index.html" class="btn btn-admin" aria-label="Iniciar Sesión Admin" title="Ir al Admin">
+          <img src="imagenes/ingeniero-de-software.png" alt="Admin" class="icon-admin">
+        </a>
         <button id="btnFilters" class="btn" aria-controls="filtersPanel" aria-expanded="false" aria-label="Abrir filtros">Filtros</button>
-
         <button id="btnNuevo" class="btn primary" aria-haspopup="dialog" aria-controls="dlgNuevo">＋ Nuevo reporte</button>
-
       </nav>
 
     </div>
-
   </header>
 
-
-
+  <!-- ===========================
+        PANEL DE FILTROS
+  ============================ -->
   <aside id="filtersPanel" class="filters" aria-hidden="true">
-
     <div class="content" role="region" aria-label="Panel de filtros">
-
       <h2>Filtrar visualización</h2>
 
-
-
       <hr style="margin:12px 0;border:none;border-top:1px solid var(--border)" />
-
       <h3 style="margin:0 0 8px 0;font-size:16px">Recomendaciones</h3>
 
       <div id="recomBox" class="card" style="border-radius:12px;margin-top:8px">
-
         <div class="content" id="recomContent"></div>
-
       </div>
 
-
-
-
-
       <div class="field">
-
         <label for="fSearch">Búsqueda</label>
-
         <input id="fSearch" type="search" placeholder="palabra, fuente, descripción" autocomplete="off" />
-
       </div>
 
-
-
       <div class="field">
-
         <label for="fTipo">Tipo de evento</label>
-
         <select id="fTipo">
-
           <option value="todos">Todos</option>
-
         </select>
-
       </div>
-
-
 
       <div class="field">
-
         <label for="fSev">Severidad</label>
-
         <select id="fSev">
-
           <option value="todas">Todas</option>
-
           <option value="baja">Baja</option>
-
           <option value="media">Media</option>
-
           <option value="alta">Alta</option>
-
         </select>
-
       </div>
-
-
 
       <div class="row">
-
         <div class="field">
-
           <label for="fFrom">Desde</label>
-
           <input id="fFrom" type="date" />
-
         </div>
 
         <div class="field">
-
           <label for="fTo">Hasta</label>
-
           <input id="fTo" type="date" />
-
         </div>
-
       </div>
-
-
 
       <div class="field">
-
         <label for="fFuente">Fuente</label>
-
         <select id="fFuente">
-
           <option value="todas">Todas</option>
-
           <option value="Ciudadanía">Ciudadanía</option>
-
           <option value="Protección Civil">Protección Civil</option>
-
           <option value="Estación Metereologica">Estación Metereológica</option>
-
         </select>
-
       </div>
-
-
 
       <div class="actions-inline">
-
         <button id="btnClear" class="btn">Limpiar</button>
-
         <button id="btnCloseFilters" class="btn">Cerrar panel</button>
-
       </div>
-
-
 
       <div class="legend">
-
         <p class="legend-title">Leyenda de severidad</p>
-
         <div class="legend-row"><span class="dot" style="background:#22c55e"></span><span class="small">Baja</span></div>
-
         <div class="legend-row"><span class="dot" style="background:#eab308"></span><span class="small">Media</span></div>
-
         <div class="legend-row"><span class="dot" style="background:#ef4444"></span><span class="small">Alta</span></div>
-
       </div>
-
     </div>
-
   </aside>
 
-
-
+  <!-- ===========================
+        CUERPO PRINCIPAL
+  ============================ -->
   <main class="container app-main">
-    <section class="card">
 
+    <section class="card">
       <h3>Indicadores</h3>
-
       <div class="content">
-
         <div class="kpis">
-
           <div class="kpi"><div class="label">Eventos (filtro)</div><div id="kTotal" class="value">0</div></div>
-
           <div class="kpi"><div class="label">Últimas 24 h</div><div id="k24" class="value">0</div></div>
-
           <div class="kpi"><div class="label">Tipos activos</div><div id="kTipos" class="value">0</div></div>
-
         </div>
-
       </div>
-
     </section>
 
-
-
     <section class="card">
-
       <h3>Distribución por tipo</h3>
-
       <div class="content">
-
         <div id="badgesTipos" class="badges" role="list"></div>
-
       </div>
-
     </section>
-
-
 
     <section class="card">
-
       <h3>Reportes</h3>
-
       <div id="list" class="list" role="list"></div>
-
     </section>
-
-
 
     <section class="card full">
-
       <h3>Mapa interactivo</h3>
-
       <div id="map" aria-label="Mapa principal" role="application"></div>
+    </section>
 
+    <!-- ===========================
+          GALERÍA DE VIDEOS
+    ============================ -->
     <section class="card videos-section">
         <div class="section-header">
             <h3><i class="fa-solid fa-video"></i> Galería de Evidencias</h3>
@@ -278,81 +169,54 @@
             </div>
         </div>
     </section>
+
     <div class="card">
-    <h3>Estadísticas en Tiempo Real (R + Mongo)</h3>
-    <img src="http://localhost:3000/api/analytics/grafica" style="width: 100%; border-radius: 8px;" alt="Cargando gráfica de R...">
-</div>
+      <h3>Estadísticas en Tiempo Real (R + Mongo)</h3>
+      <img src="http://localhost:3000/api/analytics/grafica" style="width: 100%; border-radius: 8px;" alt="Cargando gráfica de R...">
+    </div>
 
   </main>
 
-
-
   <footer class="container small">
-
-    Proyecto académico · ODS 13 · Stack: HTML · CSS · JavaScript · Leaflet · (API R/MongoDB a integrar) .
-
+    Proyecto académico · ODS 13 · Stack: HTML · CSS · JavaScript · Leaflet · (API R/MongoDB a integrar).  
     HERRAMIENTAS PARA DATOS NO ESTRUCTURADOS
-
   </footer>
 
-
-
-  <!-- Diálogo nuevo -->  
-
+  <!-- ===========================
+         DIÁLOGO NUEVO REPORTE
+  ============================ -->
   <dialog id="dlgNuevo" aria-labelledby="dlgTitle">
-
     <div class="dialog-head">
-
       <h2 id="dlgTitle">Registrar evento</h2>
-
       <button id="btnCloseDlg" class="btn" aria-label="Cerrar">Cerrar</button>
-
     </div>
 
     <form id="formNuevo" class="dialog-body" method="dialog">
-
       <div class="grid-2">
 
         <div class="field col-span">
-
           <label for="nDesc">Descripción <span class="req">*</span></label>
-
           <textarea id="nDesc" rows="3" placeholder="¿Qué ocurre? Da contexto breve." required minlength="10" maxlength="240"></textarea>
-
           <small class="hint" id="hintDesc">Entre 10 y 240 caracteres.</small>
-
         </div>
 
         <div class="field">
-
           <label for="nTipo">Tipo</label>
-
           <select id="nTipo"></select>
-
         </div>
 
         <div class="field">
-
           <label for="nSev">Severidad</label>
-
           <select id="nSev">
-
             <option value="baja">Baja</option>
-
             <option value="media" selected>Media</option>
-
             <option value="alta">Alta</option>
-
           </select>
-
         </div>
 
         <div class="field col-span">
-
           <label for="nFuente">Fuente</label>
-
-          <input id="nFuente" placeholder="Ciudadanía, PC Municipal, Estación Meteo…"/>
-
+          <input id="nFuente" placeholder="Ciudadanía, PC Municipal, Estación Meteo…" />
         </div>
 
         <p class="small col-span">Haz clic en el mapa mini para fijar la ubicación. <span id="nCoord">Sin coordenadas</span></p>
@@ -360,17 +224,12 @@
         <div class="map-mini col-span" id="mapMini" aria-label="Mapa para elegir ubicación"></div>
 
         <div class="col-span actions-inline end">
-
           <button class="btn" id="btnCancel" type="button">Cancelar</button>
-
           <button class="btn primary" id="btnSave" type="submit" disabled>Guardar reporte</button>
-
         </div>
 
       </div>
-
     </form>
-
   </dialog>
 
   <script>
@@ -379,23 +238,7 @@
     window.FEATURES = { uploads:false, riskLayer:false, captcha:false };
   </script>
 
-
-
-
-<script>
-
-  window.USE_API = true;
-
-  window.API_BASE = "http://localhost:3000/api";
-
-  window.FEATURES = { uploads:false, riskLayer:false, captcha:false };
-
-</script>
-
-
-
-<script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 
 </body>
-
 </html>

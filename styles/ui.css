@@ -5,7 +5,7 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvet
 .container{max-width:1200px;margin:0 auto;padding:16px}
 .muted{color:var(--muted)} .small{font-size:12px;color:var(--muted)} .req{color:#ef4444}
 
-.app-header{position:sticky;top:0;left:0;background:rgba(196, 134, 21, 0.753);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.app-header{position:sticky;top:0;left:0;background: radial-gradient(at left center, rgba(31, 102, 179, 1.0), rgba(195, 198, 195, 1.0));;backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
 .head-wrap{display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;gap:10px;align-items:center}
 .logo{width:36px;height:36px;border-radius:12px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.15)}
@@ -19,7 +19,11 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvet
 .actions-inline.end{justify-content:flex-end}
 
 .app-main{display:grid;grid-template-columns:1fr;gap:16px;padding:16px}
-@media (min-width:1024px){.app-main{grid-template-columns:1fr 2fr}}
+@media (min-width:1024px){
+  .app-main{
+    grid-template-columns: 1fr 1fr;  /* 50% y 50% */
+  }
+}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
 .card h3{margin:0;padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
 .card .content{padding:12px 16px}
@@ -277,4 +281,28 @@ footer{padding:24px 16px;font-size:12px;color:var(--muted)}
 }
 .slider-controls button:hover {
     background: #1abc9c; color: white; border-color: #1abc9c;
+}
+
+/* Logo principal*/
+.logo-principal {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-right: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.icon-admin {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.btn-admin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
 }
