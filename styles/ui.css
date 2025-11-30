@@ -306,3 +306,23 @@ footer{padding:24px 16px;font-size:12px;color:var(--muted)}
     justify-content: center;
     padding: 6px 10px;
 }
+
+
+.address-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.address-row input {
+  flex: 1;
+}
+
+.address-row .btn.small {
+  white-space: nowrap;
+  font-size: 12px;
+  padding-inline: 10px;
+  padding-block: 6px;
+  background-color: #2A9689;
+  color: white;
+}

@@ -29,22 +29,80 @@ export class DisasterMap {
 
 // Mini mapa para selector de coordenadas
 export class MiniPicker {
-  constructor(containerId, onPick, initialCenter={lat:20.523, lng:-100.815}, zoom=12){
+  constructor(
+    containerId,
+    onPick,
+    initialCenter = { lat: 20.523, lng: -100.815 },
+    zoom = 12
+  ) {
     this.map = L.map(containerId).setView(initialCenter, zoom);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'&copy; OpenStreetMap' }).addTo(this.map);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(this.map);
+
     this.onPick = onPick;
     this.marker = null;
-    this.map.on('click', (e)=>{
+
+    // Click manual en el mini mapa
+    this.map.on("click", (e) => {
       const { lat, lng } = e.latlng;
-      if(this.marker) this.marker.remove();
-      this.marker = L.circleMarker([lat,lng], { radius:8, color:'#fff', weight:2, fillColor:'#0ea5e9', fillOpacity:1 }).addTo(this.map);
-      this.marker._coords = {lat,lng};
-      onPick(this.marker._coords);
+
+      if (this.marker) this.marker.remove();
+
+      this.marker = L.circleMarker([lat, lng], {
+        radius: 8,
+        color: "#0ea5e9",
+        weight: 2,
+        fillColor: "#0ea5e9",
+        fillOpacity: 1,
+      }).addTo(this.map);
+
+      this.marker._coords = { lat, lng };
+
+      if (typeof this.onPick === "function") {
+        this.onPick(this.marker._coords);
+      }
     });
   }
-  setColor(color){ if(this.marker) this.marker.setStyle({ fillColor: color }); }
-  getCoords(){ return this.marker? this.marker._coords : null; }
-  clear(){ if(this.marker){ this.marker.remove(); this.marker=null; } }
+
+  // NUEVO: colocar marcador desde código (geocodificación)
+  setCoords(lat, lng, zoom = 15) {
+    if (this.marker) this.marker.remove();
+
+    this.marker = L.circleMarker([lat, lng], {
+      radius: 8,
+      color: "#0ea5e9",
+      weight: 2,
+      fillColor: "#0ea5e9",
+      fillOpacity: 1,
+    }).addTo(this.map);
+
+    this.marker._coords = { lat, lng };
+
+    if (typeof this.onPick === "function") {
+      this.onPick(this.marker._coords);
+    }
+
+    this.map.setView([lat, lng], zoom);
+  }
+
+  setColor(color) {
+    if (this.marker) {
+      this.marker.setStyle({ fillColor: color, color });
+    }
+  }
+
+  getCoords() {
+    return this.marker ? this.marker._coords : null;
+  }
+
+  clear() {
+    if (this.marker) {
+      this.marker.remove();
+      this.marker = null;
+    }
+  }
 }
 
 /*

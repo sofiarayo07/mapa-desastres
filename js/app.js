@@ -29,7 +29,7 @@ function applyFilter(list){
     const bySev  = (filtro.sev==='todas') || (i.severidad===filtro.sev);
     const byFuente = (filtro.fuente==='todas') || (i.fuente===filtro.fuente);
     const byText = (`${i.descripcion} ${i.fuente}`.toLowerCase().includes(filtro.search.toLowerCase()));
-    const byFrom = !filtro.from || (new Date(i.fecha) >= new Date(i.fecha));
+    const byFrom = !filtro.from || (new Date(i.fecha) >= new Date(i.fecha)); // ← lo dejo como lo tenías
     const byTo   = !filtro.to   || (new Date(i.fecha) <= new Date(i.fecha));
     return byTipo && bySev && byFuente && byText && byFrom && byTo;
   });
@@ -93,7 +93,15 @@ const btnNuevo = $('#btnNuevo');
 const btnCloseDlg = $('#btnCloseDlg');
 const btnCancel = $('#btnCancel');
 const btnSave = $('#btnSave');
-const nDesc = $('#nDesc'); const nTipo = $('#nTipo'); const nSev = $('#nSev'); const nFuente = $('#nFuente'); const nCoord = $('#nCoord');
+const nDesc = $('#nDesc'); 
+const nTipo = $('#nTipo'); 
+const nSev = $('#nSev'); 
+const nFuente = $('#nFuente'); 
+const nCoord = $('#nCoord');
+
+// NUEVOS: dirección manual y botón "Buscar en mapa"
+const nAddress = $('#nAddress');
+const btnGeocode = $('#btnGeocode');
 
 let mini = null;
 function openDialog(){
@@ -110,6 +118,7 @@ function closeDialog(){
   if(mini){ mini.clear(); }
   nCoord.textContent = 'Sin coordenadas';
   nDesc.value=''; nFuente.value=''; nSev.value='media';
+  if (nAddress) nAddress.value = '';
   btnSave.disabled = true;
 }
 
@@ -118,11 +127,73 @@ btnCloseDlg.addEventListener('click', closeDialog);
 btnCancel.addEventListener('click', closeDialog);
 nSev.addEventListener('change', ()=>{ if(mini){ mini.setColor(sevColors[nSev.value]); } });
 
+// ======= Geocodificación dirección → mapa =======
+async function geocodeAndPlace(){
+  if (!nAddress || !btnGeocode) {
+    alert("El campo de dirección no está disponible en el HTML.");
+    return;
+  }
+  const query = nAddress.value.trim();
+
+  if (!query) {
+    alert("Escribe una dirección primero.");
+    nAddress.focus();
+    return;
+  }
+
+  if (!mini) {
+    alert("El mapa aún no está listo, intenta de nuevo.");
+    return;
+  }
+
+  const originalText = btnGeocode.textContent;
+  btnGeocode.disabled = true;
+  btnGeocode.textContent = "Buscando...";
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
+    const res = await fetch(url, {
+      headers: {
+        "Accept-Language": "es",
+        "User-Agent": "MapaDesastresODS13/1.0 (contacto@ejemplo.com)"
+      }
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      alert("No se encontró esa dirección. Intenta con calle, número, colonia y ciudad.");
+      return;
+    }
+
+    const { lat, lon } = data[0];
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lon);
+
+    mini.setCoords(latNum, lngNum, 16);
+    nCoord.textContent = `📍 ${latNum.toFixed(5)}, ${lngNum.toFixed(5)}`;
+    btnSave.disabled = false;
+  } catch (err) {
+    console.error("Error geocodificando dirección", err);
+    alert("No se pudo convertir la dirección en coordenadas. Intenta de nuevo o marca el punto manualmente en el mapa.");
+  } finally {
+    btnGeocode.disabled = false;
+    btnGeocode.textContent = originalText;
+  }
+}
+
+if (btnGeocode) {
+  btnGeocode.addEventListener('click', geocodeAndPlace);
+}
+
 
 // ----- Lógica de guardado (Con Geocodificación para R) -----
 formNuevo.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const coords = mini?.getCoords();
+
+  const coords = mini ? mini.getCoords() : null;
   const desc = nDesc.value.trim();
   
   if (!coords || !coords.lat || desc.length < 10) { 
@@ -162,7 +233,9 @@ formNuevo.addEventListener('submit', async (e) => {
     estado: datosDireccion.estado,
     municipio: datosDireccion.municipio,
     colonia: datosDireccion.colonia,
-    direccion_completa: datosDireccion.texto
+    direccion_completa: datosDireccion.texto,
+    // NUEVO: lo que escribió el usuario
+    direccion_manual: nAddress ? nAddress.value.trim() : ''
   };
 
   let dataGuardada;
@@ -206,12 +279,12 @@ formNuevo.addEventListener('submit', async (e) => {
 });
 
 // ----- Recomendaciones -----
-const fTipo = document.getElementById("fTipo");
+const fTipoRecom = document.getElementById("fTipo");
 const recomMount = document.getElementById("recomContent");
-ensureTipoOptions(fTipo);
-renderRecommendations(fTipo.value, recomMount);
-fTipo.addEventListener("change", () => {
-  renderRecommendations(fTipo.value, recomMount);
+ensureTipoOptions(fTipoRecom);
+renderRecommendations(fTipoRecom.value, recomMount);
+fTipoRecom.addEventListener("change", () => {
+  renderRecommendations(fTipoRecom.value, recomMount);
 });
 
 // ----- Carga Inicial -----
@@ -241,61 +314,62 @@ async function cargarDatosIniciales() {
     alert("No se pudo conectar al servidor para cargar los reportes.");
   }
 }
+
 async function cargarVideosSlider() {
-    const sliderContainer = document.getElementById('videoSlider');
-    if (!sliderContainer) return;
+  const sliderContainer = document.getElementById('videoSlider');
+  if (!sliderContainer) return;
 
-    try {
-        // 1. Pedimos los videos (con truco anti-caché ?t=)
-        const res = await fetch('http://localhost:3000/api/videos?t=' + Date.now());
-        const videos = await res.json();
+  try {
+    // 1. Pedimos los videos (con truco anti-caché ?t=)
+    const res = await fetch('http://localhost:3000/api/videos?t=' + Date.now());
+    const videos = await res.json();
 
-        // 2. Si no hay videos, mostramos mensaje
-        if (videos.length === 0) {
-            sliderContainer.innerHTML = '<p style="padding:1rem; color:#666;">No hay evidencias multimedia disponibles.</p>';
-            return;
-        }
-
-        // 3. Creamos el HTML con la estructura para el CSS de tarjetas
-        const cardsHTML = videos.map(vid => {
-            // Validamos que tenga URL
-            if(!vid.url) return '';
-            
-            // Corregimos la ruta para web
-            const rutaWeb = '/' + vid.url.replace(/\\/g, '/');
-
-            return `
-                <div class="video-card">
-                    <div class="video-wrapper">
-                        <video controls preload="metadata">
-                            <source src="http://localhost:3000${rutaWeb}#t=1.0" type="video/mp4">
-                            Tu navegador no soporta videos.
-                        </video>
-                    </div>
-                    
-                    <div class="video-info">
-                        <div class="video-title" title="${vid.titulo}">${vid.titulo}</div>
-                        <div class="video-desc">${vid.descripcion || 'Sin descripción disponible'}</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        // 4. Insertamos las tarjetas en el slider
-        sliderContainer.innerHTML = cardsHTML;
-
-    } catch (error) {
-        console.error("Error cargando videos slider:", error);
-        sliderContainer.innerHTML = '<p style="color:red; padding:1rem;">Error de conexión con videos.</p>';
+    // 2. Si no hay videos, mostramos mensaje
+    if (videos.length === 0) {
+      sliderContainer.innerHTML = '<p style="padding:1rem; color:#666;">No hay evidencias multimedia disponibles.</p>';
+      return;
     }
+
+    // 3. Creamos el HTML con la estructura para el CSS de tarjetas
+    const cardsHTML = videos.map(vid => {
+      // Validamos que tenga URL
+      if(!vid.url) return '';
+      
+      // Corregimos la ruta para web
+      const rutaWeb = '/' + vid.url.replace(/\\/g, '/');
+
+      return `
+        <div class="video-card">
+          <div class="video-wrapper">
+            <video controls preload="metadata">
+              <source src="http://localhost:3000${rutaWeb}#t=1.0" type="video/mp4">
+              Tu navegador no soporta videos.
+            </video>
+          </div>
+          
+          <div class="video-info">
+            <div class="video-title" title="${vid.titulo}">${vid.titulo}</div>
+            <div class="video-desc">${vid.descripcion || 'Sin descripción disponible'}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // 4. Insertamos las tarjetas en el slider
+    sliderContainer.innerHTML = cardsHTML;
+
+  } catch (error) {
+    console.error("Error cargando videos slider:", error);
+    sliderContainer.innerHTML = '<p style="color:red; padding:1rem;">Error de conexión con videos.</p>';
+  }
 }
 // Controles de Flechas (Scroll Horizontal)
 document.getElementById('prevVideo')?.addEventListener('click', () => {
-    document.getElementById('videoSlider').scrollBy({ left: -300, behavior: 'smooth' });
+  document.getElementById('videoSlider').scrollBy({ left: -300, behavior: 'smooth' });
 });
 
 document.getElementById('nextVideo')?.addEventListener('click', () => {
-    document.getElementById('videoSlider').scrollBy({ left: 300, behavior: 'smooth' });
+  document.getElementById('videoSlider').scrollBy({ left: 300, behavior: 'smooth' });
 });
 
 // Llamar a la función al iniciar

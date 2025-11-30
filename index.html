@@ -218,7 +218,21 @@
           <label for="nFuente">Fuente</label>
           <input id="nFuente" placeholder="Ciudadanía, PC Municipal, Estación Meteo…" />
         </div>
-
+                <div class="field col-span">
+          <label for="nAddress">Dirección exacta</label>
+          <div class="address-row">
+            <input
+              id="nAddress"
+              placeholder="Ej. Calle Hidalgo 123, Col. Centro, Celaya, Gto."
+            />
+            <button type="button" id="btnGeocode" class="btn small">
+              Buscar en mapa
+            </button>
+          </div>
+          <small class="hint">
+            Escribe la dirección y da clic en “Buscar en mapa” para ubicarla automáticamente.
+          </small>
+        </div>
         <p class="small col-span">Haz clic en el mapa mini para fijar la ubicación. <span id="nCoord">Sin coordenadas</span></p>
 
         <div class="map-mini col-span" id="mapMini" aria-label="Mapa para elegir ubicación"></div>
