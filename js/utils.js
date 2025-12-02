@@ -16,6 +16,16 @@ export const tipoOptions = [
 ];
 export const labelTipo = (id) => (tipoOptions.find(t=>t.id===id)?.label || id);
 
+export const fuenteOptions = [
+  { id: 'ciudadano',        label: 'Ciudadano' },
+  { id: 'proteccion_civil', label: 'Protección civil' },
+  { id: 'medio',            label: 'Medio' },
+  { id: 'red_social',       label: 'Red social' },
+];
+
+export const labelFuente = (id) =>
+  (fuenteOptions.find(f => f.id === id)?.label || id);
+
 /*
 export function trustScore(item){
   // Base por fuente

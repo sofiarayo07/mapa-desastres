@@ -5,10 +5,39 @@ import { nowIso } from './utils.js';
 const KEY = 'md_incidentes_v1';
 
 const seed = [
-  { id:'a1', tipo:'inundacion', severidad:'alta', descripcion:'Río Laja se desborda en zona baja.', fuente:'Ciudadanía', coords:{lat:20.525,lng:-100.81}, fecha: nowIso() },
-  { id:'b2', tipo:'incendio', severidad:'media', descripcion:'Incendio de pastizal controlado.', fuente:'Protección Civil', coords:{lat:20.532,lng:-100.825}, fecha: nowIso() },
-  { id:'c3', tipo:'ola_calor', severidad:'baja', descripcion:'Temperaturas >38°C reportadas.', fuente:'Estación Meteo', coords:{lat:20.518,lng:-100.8}, fecha: nowIso() },
+  {
+    id: 'a1',
+    tipo: 'inundacion',
+    severidad: 'alta',
+    descripcion: 'R...Ciudadanía',
+    coords: { lat: 20.525, lng: -100.81 },
+    fecha: nowIso(),
+    fuente: 'ciudadano',
+    trust: 0.9
+  },
+  {
+    id: 'b2',
+    tipo: 'incendio',
+    severidad: 'media',
+    descripcion: 'In...ión Civil',
+    coords: { lat: 20.532, lng: -100.825 },
+    fecha: nowIso(),
+    fuente: 'proteccion_civil',
+    trust: 0.95
+  },
+  {
+    id: 'c3',
+    tipo: 'ola_calor',
+    severidad: 'baja',
+    descripcion: 'Te...ación Meteo',
+    coords: { lat: 20.518, lng: -100.8 },
+    fecha: nowIso(),
+    fuente: 'medio',
+    trust: 0.85
+  },
 ];
+
+
 
 function readLS(){
   try{ return JSON.parse(localStorage.getItem(KEY)) || seed; }catch(e){ return seed; }

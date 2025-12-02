@@ -99,9 +99,10 @@
         <label for="fFuente">Fuente</label>
         <select id="fFuente">
           <option value="todas">Todas</option>
-          <option value="Ciudadanía">Ciudadanía</option>
-          <option value="Protección Civil">Protección Civil</option>
-          <option value="Estación Metereologica">Estación Metereológica</option>
+          <option value="ciudadano">Ciudadano</option>
+          <option value="proteccion_civil">Protección civil</option>
+          <option value="medio">Medio</option>
+          <option value="red_social">Red social</option>
         </select>
       </div>
 
@@ -216,8 +217,15 @@
 
         <div class="field col-span">
           <label for="nFuente">Fuente</label>
-          <input id="nFuente" placeholder="Ciudadanía, PC Municipal, Estación Meteo…" />
+          <select id="nFuente" required>
+            <option value="">Selecciona la fuente…</option>
+            <option value="ciudadano">Ciudadano</option>
+            <option value="proteccion_civil">Protección civil</option>
+            <option value="medio">Medio</option>
+            <option value="red_social">Red social</option>
+          </select>
         </div>
+
                 <div class="field col-span">
           <label for="nAddress">Dirección exacta</label>
           <div class="address-row">

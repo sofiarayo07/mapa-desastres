@@ -1,6 +1,6 @@
 
 // components.js — render de KPIs, lista y badges
-import { tipoOptions, fmtDateTime, sevColors, labelTipo } from './utils.js';
+import { tipoOptions, fmtDateTime, sevColors, labelTipo, labelFuente } from './utils.js';
 
 export function renderBadgesTipos(container, list){
   const tally = {};
@@ -28,8 +28,8 @@ export function renderList(container, list){
       <div class='flex-1'>
         <div style='font-weight:600;text-transform:capitalize'>${labelTipo(i.tipo)} · <span style='font-weight:400'>${i.severidad}</span></div>
         <div class='small' style='color:#111827'>${i.descripcion}</div>
-        <div class='small'>${fmtDateTime(i.fecha)} · Fuente: ${i.fuente}</div>
-      </div>`;
+        <div class='small'>${fmtDateTime(i.fecha)} · Fuente: ${labelFuente(i.fuente)}</div>
+        </div>`;
     container.appendChild(row);
   });
 }

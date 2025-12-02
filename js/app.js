@@ -117,7 +117,9 @@ function closeDialog(){
   dlg.close();
   if(mini){ mini.clear(); }
   nCoord.textContent = 'Sin coordenadas';
-  nDesc.value=''; nFuente.value=''; nSev.value='media';
+  nDesc.value = '';
+  nFuente.value = '';      // vuelve al "Selecciona la fuente…"
+  nSev.value = 'media';
   if (nAddress) nAddress.value = '';
   btnSave.disabled = true;
 }
@@ -195,11 +197,19 @@ formNuevo.addEventListener('submit', async (e) => {
 
   const coords = mini ? mini.getCoords() : null;
   const desc = nDesc.value.trim();
-  
+
   if (!coords || !coords.lat || desc.length < 10) { 
     alert("Por favor, añade una descripción (mín. 10 caracteres) y selecciona un punto en el mapa.");
     return;
   }
+
+  // ✅ nueva validación de fuente
+  if (!nFuente.value) {
+    alert("Selecciona la fuente del reporte.");
+    nFuente.focus();
+    return;
+  }
+
 
   // 1. Obtener dirección automática (Estado, Municipio)
   let datosDireccion = { estado: '', municipio: '', colonia: '', texto: '' };
@@ -227,16 +237,17 @@ formNuevo.addEventListener('submit', async (e) => {
     tipo: nTipo.value,
     severidad: nSev.value,
     descripcion: desc,
-    fuente: (nFuente.value.trim() || 'Ciudadanía'),
+    // aquí ya va el código: "ciudadano", "medio", etc.
+    fuente: nFuente.value || 'ciudadano',
     coordenadas: coords,
     // Campos extra para análisis en R
     estado: datosDireccion.estado,
     municipio: datosDireccion.municipio,
     colonia: datosDireccion.colonia,
     direccion_completa: datosDireccion.texto,
-    // NUEVO: lo que escribió el usuario
     direccion_manual: nAddress ? nAddress.value.trim() : ''
   };
+
 
   let dataGuardada;
   try {
