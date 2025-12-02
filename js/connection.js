@@ -204,23 +204,35 @@ app.get("/api/analytics/grafica", async (req, res) => {
     });
 
     const tempCsvPath = path.resolve(__dirname, '../temp_data.csv');
-    const imagePath = path.resolve(__dirname, '../uploads/grafica_r.png');
+    const imagePath  = path.resolve(__dirname, '../uploads/grafica_r.png');
     const rScriptPath = path.resolve(__dirname, '../analisis.R');
-    
+
+    // Guardar CSV
     fs.writeFileSync(tempCsvPath, csvContent);
 
-    // Ejecutar R
-    const command = `Rscript "${rScriptPath}" "${tempCsvPath}" "${imagePath}"`;
+    // ⚠️ AJUSTA ESTA RUTA A TU VERSIÓN DE R
+    // EJEMPLO: C:\\Program Files\\R\\R-4.4.1\\bin\\Rscript.exe
+    const RSCRIPT_BIN = `"C:\\Program Files\\R\\R-4.5.2\\bin\\Rscript.exe"`;
 
+    // 👉 Aquí verificas QUÉ está intentando ejecutar Node
+    console.log("Ruta analisis.R:", rScriptPath);
+    console.log("CSV temporal:", tempCsvPath);
+    console.log("Imagen salida:", imagePath);
+
+    const command = `${RSCRIPT_BIN} "${rScriptPath}" "${tempCsvPath}" "${imagePath}"`;
+    console.log("Comando que se ejecuta:", command);
+
+    // Ejecutar R
     exec(command, (error, stdout, stderr) => {
+      console.log("stdout R:", stdout);
       if (error) {
-        console.error("Error R:", stderr);
+        console.error("Error R:", stderr || error);
         return res.status(500).send("Error generando gráfica R");
       }
       if (fs.existsSync(imagePath)) {
-          res.sendFile(imagePath);
+        res.sendFile(imagePath);
       } else {
-          res.status(500).send("R terminó pero no generó imagen");
+        res.status(500).send("R terminó pero no generó imagen");
       }
     });
 
@@ -229,6 +241,7 @@ app.get("/api/analytics/grafica", async (req, res) => {
     res.status(500).send("Error interno");
   }
 });
+
 
 // ==========================================
 // SERVIDOR
