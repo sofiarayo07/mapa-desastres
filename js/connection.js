@@ -9,6 +9,8 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { exec } from 'child_process';
+import { scrapeAlertasExternas } from './scraper.js';
+
 
 // Configuración de rutas y servidor
 const __filename = fileURLToPath(import.meta.url);
@@ -36,19 +38,42 @@ mongoose.connect(uri)
 // ==========================================
 const reporteSchema = new mongoose.Schema({
   descripcion: { type: String, required: true },
-  tipo: { type: String, required: true },
-  severidad: { type: String, required: true },
-  fuente: { type: String, required: true },
-  coordenadas: { lat: Number, lng: Number },
+  tipo:        { type: String, required: true },
+  severidad:   { type: String, required: true },
+  fuente:      { type: String, required: true },
+  coordenadas: {
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true }
+  },
   fecha: { type: Date, default: Date.now },
-  // Campos extra para R
-  estado: { type: String },
-  municipio: { type: String },
-  colonia: { type: String },
-  direccion_completa: { type: String }
+
+  municipio: String,
+  colonia: String,
+
+  // NUEVOS CAMPOS OPCIONALES
+  origenUrl: String,
+  externoId: { type: String, index: true, sparse: true }
 });
 
 const Reporte = mongoose.model("Reporte", reporteSchema);
+
+// Middleware: requiere token JWT válido
+function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization || "";
+  const token = authHeader.replace("Bearer ", "");
+
+  if (!token) {
+    return res.status(401).json({ error: "No autorizado (falta token)" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.id; // por si lo quieres usar después
+    next();
+  } catch (e) {
+    return res.status(401).json({ error: "Token inválido" });
+  }
+}
 
 app.post("/api/reportes", async (req, res) => {
   try {
@@ -77,6 +102,55 @@ app.delete("/api/reportes/:id", async (req, res) => {
     res.status(500).json({ error: "No se pudo eliminar" });
   }
 });
+
+// Lanza scraping manualmente desde Protección Civil GTO
+app.post("/api/scrape/proteccion-civil", requireAuth, async (req, res) => {
+  try {
+    // Puedes mandar { "pages": 1 } en el body, por defecto 1 página
+    const { pages = 1 } = req.body || {};
+
+    // 1) Scrapeamos boletines
+    const alertas = await scrapeProteccionCivilGTO({ pages });
+
+    let insertados = 0;
+
+    for (const a of alertas) {
+      // 2) Evitar duplicados: si ya existe un reporte con esa URL de origen, lo saltamos
+      const ya = await Reporte.findOne({ origenUrl: a.enlace });
+      if (ya) continue;
+
+      // 3) Guardar el reporte en Mongo con tu esquema
+      const rep = new Reporte({
+        descripcion: a.descripcion || a.titulo,
+        tipo: a.tipoDesastre,           // "inundacion", "incendio_forestal", etc.
+        severidad: "media",             // por ahora fija; luego la calculas
+        fuente: a.fuente,               // "proteccion_civil_gto"
+        coordenadas: { lat: null, lng: null }, // luego puedes geocodificar
+        fecha: a.fecha || new Date(),
+        // campos extra opcionales si los tienes en el esquema:
+        municipio: a.zona || null,
+        estado: "Guanajuato",
+        origenUrl: a.enlace
+      });
+
+      await rep.save();
+      insertados++;
+    }
+
+    res.json({
+      ok: true,
+      encontrados: alertas.length,
+      insertados
+    });
+  } catch (err) {
+    console.error("Error scraping PC GTO:", err);
+    res.status(500).json({
+      error: "Error en scraping",
+      detalle: err.message
+    });
+  }
+});
+
 
 app.put("/api/reportes/:id", async (req, res) => {
   try {
@@ -225,16 +299,24 @@ app.get("/api/analytics/grafica", async (req, res) => {
     // Ejecutar R
     exec(command, (error, stdout, stderr) => {
       console.log("stdout R:", stdout);
+      console.error("stderr R:", stderr);
+
       if (error) {
-        console.error("Error R:", stderr || error);
-        return res.status(500).send("Error generando gráfica R");
+        console.error("Error ejecutando Rscript:", error);
+        return res.status(500).json({
+          ok: false,
+          error: "Error ejecutando R",
+          detalle: stderr || error.message,
+        });
       }
-      if (fs.existsSync(imagePath)) {
-        res.sendFile(imagePath);
-      } else {
-        res.status(500).send("R terminó pero no generó imagen");
-      }
-    });
+
+      // Si todo salió bien:
+      return res.json({
+        ok: true,
+        imagen: "/uploads/grafica_r.png",
+      });
+  });
+
 
   } catch (error) {
     console.error(error);
