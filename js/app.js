@@ -289,6 +289,8 @@ formNuevo.addEventListener('submit', async (e) => {
   }
 });
 
+
+
 // ----- Recomendaciones -----
 const fTipoRecom = document.getElementById("fTipo");
 const recomMount = document.getElementById("recomContent");
@@ -297,6 +299,104 @@ renderRecommendations(fTipoRecom.value, recomMount);
 fTipoRecom.addEventListener("change", () => {
   renderRecommendations(fTipoRecom.value, recomMount);
 });
+
+// ============================
+//   PRODUCTOS (JSON local)
+// ============================
+
+let _productos = [];
+
+// Cargar JSON de productos (pre-scrapeado con R)
+async function cargarProductos() {
+  try {
+    const res = await fetch("data/productos_inundaciones.json");
+    if (!res.ok) throw new Error("No se pudo cargar productos");
+    _productos = await res.json();
+    renderProducts(_productos);
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+    const container = document.getElementById("productsList");
+    if (container) {
+      container.innerHTML = '<p class="small" style="color:red;">Error al cargar productos.</p>';
+    }
+  }
+}
+
+// Renderiza tarjetas de productos en la UI
+function renderProducts(items) {
+  const container = document.getElementById("productsList");
+  if (!container) return;
+
+  if (!items || !items.length) {
+    container.innerHTML = '<p class="small">No hay productos para mostrar.</p>';
+    return;
+  }
+
+  container.innerHTML = items
+    .map(
+      (p) => `
+      <article class="product-card">
+        <h4>${p.nombre}</h4>
+        ${p.categoria ? `<p class="category">${p.categoria}</p>` : ""}
+        ${p.descripcion ? `<p>${p.descripcion}</p>` : ""}
+        ${
+          p.precio_aprox
+            ? `<p class="price">$ ${p.precio_aprox.toLocaleString("es-MX")} ${p.moneda || ""}</p>`
+            : ""
+        }
+        ${
+          p.url
+            ? `<a href="${p.url}" target="_blank" rel="noopener noreferrer">Ver más detalles</a>`
+            : ""
+        }
+      </article>
+    `
+    )
+    .join("");
+}
+
+// Inicializa eventos de búsqueda
+function initProductsSection() {
+  const input = document.getElementById("prodSearch");
+  const btn = document.getElementById("btnProdSearch");
+  const container = document.getElementById("productsList");
+
+  if (!input || !btn || !container) return;
+
+  // Buscar por texto
+  btn.addEventListener("click", () => {
+    const term = input.value.trim().toLowerCase();
+    if (!term) {
+      renderProducts(_productos);
+      return;
+    }
+
+    const filtrados = _productos.filter((p) => {
+      const texto =
+        (p.nombre || "") +
+        " " +
+        (p.descripcion || "") +
+        " " +
+        (p.categoria || "") +
+        " " +
+        (p.palabras_clave || []).join(" ");
+      return texto.toLowerCase().includes(term);
+    });
+
+    renderProducts(filtrados);
+  });
+
+  // Enter en el input
+  input.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      btn.click();
+    }
+  });
+
+  // Carga inicial
+  cargarProductos();
+}
 
 // ----- Carga Inicial -----
 async function cargarDatosIniciales() {
@@ -386,3 +486,4 @@ document.getElementById('nextVideo')?.addEventListener('click', () => {
 // Llamar a la función al iniciar
 cargarVideosSlider();
 cargarDatosIniciales();
+initProductsSection();   // 👈 nueva línea

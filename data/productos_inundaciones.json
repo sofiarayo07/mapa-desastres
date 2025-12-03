@@ -1,0 +1,35 @@
+[
+  {
+    "id": "p1",
+    "nombre": "Kit de emergencia para inundaciones (linterna, botiquín, radio)",
+    "categoria": "kit_emergencia",
+    "descripcion": "Incluye linterna a pilas, radio AM/FM, botiquín básico y bolsa impermeable.",
+    "precio_aprox": 750,
+    "moneda": "MXN",
+    "url": "https://ejemplo.com/kit-emergencia-inundaciones",
+    "fuente": "web_scraping_rvest",
+    "palabras_clave": ["inundacion", "kit", "emergencia", "botiquin"]
+  },
+  {
+    "id": "p2",
+    "nombre": "Bomba de agua sumergible 1 HP",
+    "categoria": "bombeo",
+    "descripcion": "Bomba para desalojo rápido de agua en sótanos y patios.",
+    "precio_aprox": 2300,
+    "moneda": "MXN",
+    "url": "https://ejemplo.com/bomba-agua-sumergible",
+    "fuente": "web_scraping_rvest",
+    "palabras_clave": ["bomba", "agua", "inundacion", "desalojo"]
+  },
+  {
+    "id": "p3",
+    "nombre": "Costales de arena para contención de agua (paquete de 10)",
+    "categoria": "contencion",
+    "descripcion": "Costales reforzados para crear barreras temporales contra el agua.",
+    "precio_aprox": 450,
+    "moneda": "MXN",
+    "url": "https://ejemplo.com/costales-arena-inundacion",
+    "fuente": "web_scraping_rvest",
+    "palabras_clave": ["costales", "arena", "contencion", "inundacion"]
+  }
+]

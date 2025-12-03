@@ -180,6 +180,36 @@
 
   </main>
 
+      <!-- ===========================
+          PRODUCTOS RELACIONADOS
+    ============================ -->
+    <section class="card">
+      <h3>Productos para preparación ante inundaciones</h3>
+      <div class="content">
+
+        <div class="field products-search">
+          <label for="prodSearch">Buscar productos</label>
+          <div class="row">
+            <input
+              id="prodSearch"
+              type="search"    
+              placeholder="Ej. bomba de agua, costales de arena, kit de emergencia"
+              autocomplete="off"
+            />
+            <button id="btnProdSearch" class="btn small">Buscar</button>
+          </div>
+          <small class="hint">
+            Listado de productos obtenidos mediante web scraping (fuentes externas) y estandarizados.
+          </small>
+        </div>
+
+        <div id="productsList" class="products-list">
+          <p class="small">Cargando productos recomendados...</p>
+        </div>
+      </div>
+    </section>
+
+
   <footer class="container small">
     Proyecto académico · ODS 13 · Stack: HTML · CSS · JavaScript · Leaflet · (API R/MongoDB a integrar).  
     HERRAMIENTAS PARA DATOS NO ESTRUCTURADOS
