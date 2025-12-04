@@ -143,9 +143,9 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" style="max-height: 560px; display:flex;flex-direction: column;">
       <h3>Reportes</h3>
-      <div id="list" class="list" role="list"></div>
+      <div id="list" class="list" role="list" style="flex:1; overflow-y: auto; padding-right: 4px;"></div>
     </section>
 
     <section class="card map-card">
@@ -156,7 +156,7 @@
     <!-- ===========================
           GALERÍA DE VIDEOS
     ============================ -->
-    <section class="card videos-section">
+    <section class="card videos-section full">
         <div class="section-header">
             <h3><i class="fa-solid fa-video"></i> Galería de Evidencias</h3>
             <div class="slider-controls">
@@ -171,10 +171,25 @@
         </div>
     </section>
 
-    <div class="card">
+    <div class="card full">
       <h3>Estadísticas en Tiempo Real (R + Mongo)</h3>
       <img src="http://localhost:3000/uploads/grafica_r.png"
-        style="width: 100%; border-radius: 8px;"
+        style="width: 45%; border-radius: 8px;"
+        alt="Gráfica generada por R">
+        <img src="http://localhost:3000/uploads/reportes_por_dia_semana.png"
+        style="width: 45%; border-radius: 8px;"
+        alt="Gráfica generada por R">
+        <img src="http://localhost:3000/uploads/reportes_por_fuente.png"
+        style="width: 45%; border-radius: 8px;"
+        alt="Gráfica generada por R">
+        <img src="http://localhost:3000/uploads/reportes_por_mes.png"
+        style="width: 45%; border-radius: 8px;"
+        alt="Gráfica generada por R">
+        <img src="http://localhost:3000/uploads/reporttes_por_severidad.png"
+        style="width: 45%; border-radius: 8px;"
+        alt="Gráfica generada por R">
+        <img src="http://localhost:3000/uploads/reportes_por_tipo.png"
+        style="width: 45%; border-radius: 8px;"
         alt="Gráfica generada por R">
     </div>
 

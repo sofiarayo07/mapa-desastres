@@ -10,6 +10,28 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { exec } from 'child_process';
 import { scrapeAlertasExternas } from './scraper.js';
+import cron from 'node-cron';
+
+
+// =============================================================
+// CRON JOB: Ejecutar análisis de R cada minuto
+// =============================================================
+cron.schedule("*/1 * * * *", () => {
+    console.log("Ejecutando análisis R...");
+
+    const R_BIN = `"C:\\Program Files\\R\\R-4.5.2\\bin\\Rscript.exe"`;
+    const command = `${R_BIN} "${path.join(__dirname, "../analisis.R")}"`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error("Error ejecutando R:", error.message);
+            console.error("stderr:", stderr);
+        } else {
+            console.log("Análisis completado");
+        }
+    });
+});
+
 
 
 // Configuración de rutas y servidor
